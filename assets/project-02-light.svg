@@ -18,10 +18,10 @@
   <text x="64" y="183" class="serif" fill="#a6a299" font-size="96" letter-spacing="-4px">02</text>
   <line x1="270" y1="92" x2="270" y2="224" stroke="#403f3c"/>
 
-  <text x="306" y="112" class="sans" fill="#f4f1e9" font-size="42" font-weight="720" letter-spacing="-1.5px">EcoRoute</text>
+  <text x="306" y="113" class="sans" fill="#f4f1e9" font-size="42" font-weight="720" letter-spacing="-1.35px">EcoRoute</text>
   <line x1="752" y1="92" x2="752" y2="224" stroke="#403f3c"/>
 
-  <text x="790" y="119" class="sans" fill="#f4f1e9" font-size="18" font-weight="470" letter-spacing="-.15px">Eco-friendly route system that uses a DNN to estimate</text><text x="790" y="147" class="sans" fill="#f4f1e9" font-size="18" font-weight="470" letter-spacing="-.15px">energy consumption and CO₂ across candidate routes.</text>
+  <text x="790" y="116" class="sans" fill="#f4f1e9" font-size="17" font-weight="470" letter-spacing="-.1px">Eco-friendly route system that uses a DNN to</text><text x="790" y="143" class="sans" fill="#f4f1e9" font-size="17" font-weight="470" letter-spacing="-.1px">estimate energy consumption and CO₂ across</text><text x="790" y="170" class="sans" fill="#f4f1e9" font-size="17" font-weight="470" letter-spacing="-.1px">candidate routes.</text>
   <text x="790" y="215" class="sans label" fill="#a6a299">PYTHON  /  PYTORCH  /  NETWORKX</text>
   <text x="1240" y="215" class="sans label" fill="#f4f1e9">VIEW</text>
   <path d="M1292 210 H1334 M1326 202 L1334 210 L1326 218" fill="none" stroke="#f4f1e9" stroke-width="1.5"/>

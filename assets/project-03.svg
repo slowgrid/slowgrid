@@ -18,10 +18,10 @@
   <text x="64" y="183" class="serif" fill="#6f6c66" font-size="96" letter-spacing="-4px">03</text>
   <line x1="270" y1="92" x2="270" y2="224" stroke="#c9c5bb"/>
 
-  <text x="306" y="112" class="sans" fill="#171717" font-size="42" font-weight="720" letter-spacing="-1.5px">LocalQA</text>
+  <text x="306" y="113" class="sans" fill="#171717" font-size="42" font-weight="720" letter-spacing="-1.35px">LocalQA</text>
   <line x1="752" y1="92" x2="752" y2="224" stroke="#c9c5bb"/>
 
-  <text x="790" y="119" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">Local-first QA tool that crawls websites, detects common</text><text x="790" y="147" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">issues, and exports reproducible reports.</text>
+  <text x="790" y="116" class="sans" fill="#171717" font-size="17" font-weight="470" letter-spacing="-.1px">Local-first QA tool that crawls websites,</text><text x="790" y="143" class="sans" fill="#171717" font-size="17" font-weight="470" letter-spacing="-.1px">detects common issues, and exports</text><text x="790" y="170" class="sans" fill="#171717" font-size="17" font-weight="470" letter-spacing="-.1px">reproducible reports.</text>
   <text x="790" y="215" class="sans label" fill="#6f6c66">TYPESCRIPT  /  ELECTRON  /  PLAYWRIGHT</text>
   <text x="1240" y="215" class="sans label" fill="#171717">VIEW</text>
   <path d="M1292 210 H1334 M1326 202 L1334 210 L1326 218" fill="none" stroke="#171717" stroke-width="1.5"/>

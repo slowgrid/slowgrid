@@ -18,10 +18,10 @@
   <text x="64" y="183" class="serif" fill="#6f6c66" font-size="96" letter-spacing="-4px">01</text>
   <line x1="270" y1="92" x2="270" y2="224" stroke="#c9c5bb"/>
 
-  <text x="306" y="112" class="sans" fill="#171717" font-size="42" font-weight="720" letter-spacing="-1.5px">Algorithm-Trace-Visualizer-Desktop</text>
+  <text x="306" y="100" class="sans" fill="#171717" font-size="42" font-weight="720" letter-spacing="-1.35px">Algorithm-Trace-</text><text x="306" y="147" class="sans" fill="#171717" font-size="42" font-weight="720" letter-spacing="-1.35px">Visualizer-Desktop</text>
   <line x1="752" y1="92" x2="752" y2="224" stroke="#c9c5bb"/>
 
-  <text x="790" y="119" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">Desktop debugger that runs multiple languages locally and</text><text x="790" y="147" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">visualizes execution flow, variables, call stacks, and</text><text x="790" y="175" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">test results.</text>
+  <text x="790" y="116" class="sans" fill="#171717" font-size="17" font-weight="470" letter-spacing="-.1px">Desktop debugger that runs multiple</text><text x="790" y="143" class="sans" fill="#171717" font-size="17" font-weight="470" letter-spacing="-.1px">languages locally and visualizes execution</text><text x="790" y="170" class="sans" fill="#171717" font-size="17" font-weight="470" letter-spacing="-.1px">flow, variables, call stacks, and test</text>
   <text x="790" y="215" class="sans label" fill="#6f6c66">TYPESCRIPT  /  ELECTRON  /  REACT</text>
   <text x="1240" y="215" class="sans label" fill="#171717">VIEW</text>
   <path d="M1292 210 H1334 M1326 202 L1334 210 L1326 218" fill="none" stroke="#171717" stroke-width="1.5"/>
