@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 ASSETS.mkdir(exist_ok=True)
-RENDERER_VERSION = "editorial-complete-1"
+RENDERER_VERSION = "editorial-complete-2"
 
 
 def esc(value: object) -> str:
@@ -38,6 +38,55 @@ def display_url(value: str, username: str) -> str:
     value = re.sub(r"^https?://", "", str(value).strip(), flags=re.IGNORECASE)
     value = re.sub(r"^www\.", "", value, flags=re.IGNORECASE).rstrip("/")
     return value or f"github.com/{username}"
+
+
+def wrap_project_title(text: object, max_chars: int) -> list[str]:
+    """Wrap project names on spaces and punctuation so long repo-style names do not collide."""
+    value = str(text).strip()
+    if not value:
+        return [""]
+
+    # Keep hyphens/slashes attached to the preceding segment, but allow a break after them.
+    tokens = [token for token in re.split(r"(?<=[-/])|\s+", value) if token]
+    lines: list[str] = []
+    current = ""
+
+    for token in tokens:
+        joiner = "" if (not current or current.endswith(("-", "/"))) else " "
+        candidate = f"{current}{joiner}{token}" if current else token
+
+        if len(candidate) <= max_chars:
+            current = candidate
+            continue
+
+        if current:
+            lines.append(current)
+            current = ""
+
+        # Extremely long unbroken identifiers still need a safe fallback.
+        while len(token) > max_chars:
+            lines.append(token[:max_chars])
+            token = token[max_chars:]
+        current = token
+
+    if current:
+        lines.append(current)
+    return lines or [""]
+
+
+def project_title_layout(text: object) -> tuple[list[str], int]:
+    # Wider titles get a slightly smaller size, but stay deliberately large/editorial.
+    for font_size, max_chars in ((42, 19), (39, 21), (36, 23), (33, 25), (30, 28)):
+        lines = wrap_project_title(text, max_chars)
+        if len(lines) <= 2:
+            return lines, font_size
+
+    lines = wrap_project_title(text, 28)
+    if len(lines) > 2:
+        tail = " ".join(lines[1:])
+        tail = textwrap.shorten(tail, width=28, placeholder="…")
+        lines = [lines[0], tail]
+    return lines[:2], 30
 
 
 def asset_version(cfg: dict) -> str:
@@ -267,9 +316,9 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
     description = str(project.get("description", "")).strip()
     tags = [str(value).strip() for value in project.get("tags", []) if str(value).strip()][:5]
 
-    title_lines = wrap(title, 24)[:2]
-    desc_lines = wrap(description, 58)[:3]
-    tags_line = "  /  ".join(tags)
+    title_lines, title_font_size = project_title_layout(title)
+    desc_lines = wrap(description, 44)[:3]
+    tags_line = "  /  ".join(tags[:4])
 
     def build(theme: str) -> str:
         p = palette(theme, accent)
@@ -279,13 +328,14 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
         muted = p["inverse_muted"] if inverse else p["muted"]
         rule = p["inverse_rule"] if inverse else p["rule"]
 
-        title_y = 112 if len(title_lines) == 1 else 94
+        title_y = 113 if len(title_lines) == 1 else 100
+        title_line_height = int(title_font_size * 1.14)
         title_markup = "".join(
-            f'<text x="306" y="{title_y + row * 46}" class="sans" fill="{ink}" font-size="42" font-weight="720" letter-spacing="-1.5px">{esc(line)}</text>'
+            f'<text x="306" y="{title_y + row * title_line_height}" class="sans" fill="{ink}" font-size="{title_font_size}" font-weight="720" letter-spacing="-1.35px">{esc(line)}</text>'
             for row, line in enumerate(title_lines)
         )
         desc_markup = "".join(
-            f'<text x="790" y="{119 + row * 28}" class="sans" fill="{ink}" font-size="18" font-weight="470" letter-spacing="-.15px">{esc(line)}</text>'
+            f'<text x="790" y="{116 + row * 27}" class="sans" fill="{ink}" font-size="17" font-weight="470" letter-spacing="-.1px">{esc(line)}</text>'
             for row, line in enumerate(desc_lines)
         )
 
