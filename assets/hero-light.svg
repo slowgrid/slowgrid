@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="440" viewBox="0 0 1400 440" role="img" aria-labelledby="title desc">
+  <title id="title">KIM HYEONGJUN - SOFTWARE ENGINEER</title>
+  <desc id="desc">GitHub profile introduction for KIM HYEONGJUN.</desc>
+  <defs>
+    <style>
+      .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+      .serif { font-family: Georgia, "Times New Roman", serif; }
+      .label { font-size: 13px; font-weight: 700; letter-spacing: 1.7px; }
+      .small { font-size: 14px; font-weight: 600; letter-spacing: .2px; }
+    </style>
+  </defs>
+  
+  <rect width="936" height="440" fill="#f2f0e9"/>
+  <rect x="936" width="464" height="440" fill="#171717"/>
+  <rect x="932" width="4" height="440" fill="#7c3aed"/>
+
+  <text x="64" y="52" class="sans label" fill="#6f6c66">GITHUB PROFILE</text>
+  <text x="872" y="52" text-anchor="end" class="sans label" fill="#6f6c66">@slowgrid</text>
+  <line x1="64" y1="72" x2="872" y2="72" stroke="#c9c5bb"/>
+
+  <text x="64" y="246" class="sans" fill="#171717" font-size="92" font-weight="760" letter-spacing="-4.8px">KIM HYEONGJUN</text>
+
+  <line x1="64" y1="366" x2="872" y2="366" stroke="#c9c5bb"/>
+  <text x="64" y="400" class="sans label" fill="#6f6c66">DAEGU, KR</text>
+  <text x="872" y="400" text-anchor="end" class="sans label" fill="#6f6c66">SLOWGRID.TISTORY.COM</text>
+
+  <text x="982" y="70" class="sans label" fill="#a6a299">SOFTWARE ENGINEER</text>
+  <text x="982" y="170" class="serif" fill="#f4f1e9" font-size="33" letter-spacing="-.6px">I build systems that</text><text x="982" y="216" class="serif" fill="#f4f1e9" font-size="33" letter-spacing="-.6px">ship.</text>
+  <line x1="982" y1="326" x2="1340" y2="326" stroke="#403f3c"/>
+  <text x="982" y="362" class="sans small" fill="#a6a299">Selected work, open source, and notes below.</text>
+  <path d="M982 390 H1030 M1022 382 L1030 390 L1022 398" fill="none" stroke="#f4f1e9" stroke-width="1.5"/>
+
+</svg>

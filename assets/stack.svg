@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="338" viewBox="0 0 1400 338" role="img" aria-labelledby="title desc">
+  <title id="title">Selected technology stack</title>
+  <desc id="desc">A curated technology stack grouped by area.</desc>
+  <defs>
+    <style>
+      .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+      .serif { font-family: Georgia, "Times New Roman", serif; }
+      .label { font-size: 13px; font-weight: 700; letter-spacing: 1.7px; }
+      .small { font-size: 14px; font-weight: 600; letter-spacing: .2px; }
+    </style>
+  </defs>
+  
+  <rect width="1400" height="338" fill="#f2f0e9"/>
+  <text x="64" y="48" class="sans label" fill="#6f6c66">SELECTED STACK</text>
+  <text x="1336" y="48" text-anchor="end" class="sans label" fill="#6f6c66">02 / TOOLS</text>
+  <line x1="64" y1="70" x2="1336" y2="70" stroke="#c9c5bb"/>
+  <line x1="357" y1="92" x2="357" y2="304" stroke="#c9c5bb"/>
+  <line x1="682" y1="92" x2="682" y2="304" stroke="#c9c5bb"/>
+  <line x1="1007" y1="92" x2="1007" y2="304" stroke="#c9c5bb"/>
+  
+  <text x="64" y="104" class="serif" fill="#6f6c66" font-size="18">01</text>
+  <text x="106" y="103" class="sans label" fill="#6f6c66">CORE</text>
+  <line x1="64" y1="118" x2="320" y2="118" stroke="#7c3aed" stroke-width="2"/>
+  <text x="64" y="146" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">Python</text><text x="64" y="181" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">Java</text>
+
+  <text x="389" y="104" class="serif" fill="#6f6c66" font-size="18">02</text>
+  <text x="431" y="103" class="sans label" fill="#6f6c66">BACKEND</text>
+  <line x1="389" y1="118" x2="645" y2="118" stroke="#7c3aed" stroke-width="2"/>
+  <text x="389" y="146" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">Spring Boot</text><text x="389" y="181" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">Node.js</text><text x="389" y="216" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">PostgreSQL</text>
+
+  <text x="714" y="104" class="serif" fill="#6f6c66" font-size="18">03</text>
+  <text x="756" y="103" class="sans label" fill="#6f6c66">INFRA</text>
+  <line x1="714" y1="118" x2="970" y2="118" stroke="#7c3aed" stroke-width="2"/>
+  <text x="714" y="146" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">Docker</text><text x="714" y="181" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">AWS</text><text x="714" y="216" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">GitHub Actions</text>
+
+  <text x="1039" y="104" class="serif" fill="#6f6c66" font-size="18">04</text>
+  <text x="1081" y="103" class="sans label" fill="#6f6c66">AI / DATA</text>
+  <line x1="1039" y1="118" x2="1295" y2="118" stroke="#7c3aed" stroke-width="2"/>
+  <text x="1039" y="146" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">PyTorch</text><text x="1039" y="181" class="sans" fill="#171717" font-size="21" font-weight="600" letter-spacing="-.3px">OpenAI</text>
+
+
+</svg>

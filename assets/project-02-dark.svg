@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="270" viewBox="0 0 1400 270" role="img" aria-labelledby="title desc">
+  <title id="title">Project 2: EcoRoute</title>
+  <desc id="desc">Eco-friendly route system that uses a DNN to estimate energy consumption and CO₂ across candidate routes.</desc>
+  <defs>
+    <style>
+      .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+      .serif { font-family: Georgia, "Times New Roman", serif; }
+      .label { font-size: 13px; font-weight: 700; letter-spacing: 1.7px; }
+      .small { font-size: 14px; font-weight: 600; letter-spacing: .2px; }
+    </style>
+  </defs>
+  
+  <rect width="1400" height="270" fill="#ece9e1"/>
+  <rect width="4" height="270" fill="#7c3aed"/>
+  <text x="64" y="48" class="sans label" fill="#716e67">PROJECT 02  /  OPEN SOURCE</text>
+  <line x1="64" y1="68" x2="1336" y2="68" stroke="#c8c4ba"/>
+
+  <text x="64" y="183" class="serif" fill="#716e67" font-size="96" letter-spacing="-4px">02</text>
+  <line x1="270" y1="92" x2="270" y2="224" stroke="#c8c4ba"/>
+
+  <text x="306" y="112" class="sans" fill="#171717" font-size="42" font-weight="720" letter-spacing="-1.5px">EcoRoute</text>
+  <line x1="752" y1="92" x2="752" y2="224" stroke="#c8c4ba"/>
+
+  <text x="790" y="119" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">Eco-friendly route system that uses a DNN to estimate</text><text x="790" y="147" class="sans" fill="#171717" font-size="18" font-weight="470" letter-spacing="-.15px">energy consumption and CO₂ across candidate routes.</text>
+  <text x="790" y="215" class="sans label" fill="#716e67">PYTHON  /  PYTORCH  /  NETWORKX</text>
+  <text x="1240" y="215" class="sans label" fill="#171717">VIEW</text>
+  <path d="M1292 210 H1334 M1326 202 L1334 210 L1326 218" fill="none" stroke="#171717" stroke-width="1.5"/>
+
+</svg>
