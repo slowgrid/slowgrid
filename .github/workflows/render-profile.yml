@@ -1,15 +1,23 @@
-name: Render profile
+name: Render profile and writing
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "17 0 * * *"
   push:
     paths:
       - "profile.json"
       - "README_TEMPLATE.md"
       - "scripts/render_profile.py"
+      - "scripts/update_blog_posts.py"
+      - ".github/workflows/render-profile.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: render-profile
+  cancel-in-progress: true
 
 jobs:
   render:
@@ -18,8 +26,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Render complete editorial profile
+      - name: Render editorial profile
         run: python3 scripts/render_profile.py
+
+      - name: Render editorial writing cards
+        run: python3 scripts/update_blog_posts.py
 
       - name: Commit generated profile
         run: |
@@ -27,6 +38,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md assets/*.svg
           if ! git diff --cached --quiet; then
-            git commit -m "chore: render profile"
+            git commit -m "chore: render profile and writing"
             git push
           fi

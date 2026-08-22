@@ -5,33 +5,28 @@ import hashlib
 import html
 import json
 import re
-import textwrap
+import unicodedata
 from pathlib import Path
+from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
-ASSETS.mkdir(exist_ok=True)
-RENDERER_VERSION = "editorial-complete-2"
+ASSETS.mkdir(parents=True, exist_ok=True)
+
+RENDERER_VERSION = "editorial-complete-3"
+BLOG_START_MARKER = "<!-- BLOG-POSTS:START -->"
+BLOG_END_MARKER = "<!-- BLOG-POSTS:END -->"
 
 
 def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def safe_url(url: str) -> str:
-    value = str(url).strip()
-    if re.match(r"^(https://|mailto:)", value):
+def safe_url(url: object) -> str:
+    value = str(url or "").strip()
+    if re.match(r"^(https://|mailto:)", value, flags=re.IGNORECASE):
         return value
     return "#"
-
-
-def wrap(text: object, width: int) -> list[str]:
-    return textwrap.wrap(
-        str(text),
-        width=width,
-        break_long_words=False,
-        break_on_hyphens=False,
-    ) or [""]
 
 
 def display_url(value: str, username: str) -> str:
@@ -40,58 +35,121 @@ def display_url(value: str, username: str) -> str:
     return value or f"github.com/{username}"
 
 
-def wrap_project_title(text: object, max_chars: int) -> list[str]:
-    """Wrap project names on spaces and punctuation so long repo-style names do not collide."""
-    value = str(text).strip()
-    if not value:
+def visual_width(value: object) -> int:
+    """Approximate rendered width, counting wide East Asian glyphs as two units."""
+    total = 0
+    for char in str(value):
+        total += 2 if unicodedata.east_asian_width(char) in {"W", "F"} else 1
+    return total
+
+
+def _split_long_token(token: str, max_units: int) -> list[str]:
+    if visual_width(token) <= max_units:
+        return [token]
+
+    parts: list[str] = []
+    current = ""
+    for char in token:
+        candidate = current + char
+        if current and visual_width(candidate) > max_units:
+            parts.append(current)
+            current = char
+        else:
+            current = candidate
+    if current:
+        parts.append(current)
+    return parts
+
+
+def _truncate_to_units(value: str, max_units: int, placeholder: str = "…") -> str:
+    value = value.rstrip()
+    if visual_width(value) <= max_units:
+        return value
+
+    target = max(0, max_units - visual_width(placeholder))
+    result = ""
+    for char in value:
+        if visual_width(result + char) > target:
+            break
+        result += char
+    return result.rstrip() + placeholder
+
+
+def visual_wrap(value: object, max_units: int, max_lines: int | None = None) -> list[str]:
+    """Wrap Latin and Korean text without relying on a server-side font renderer."""
+    text = re.sub(r"\s+", " ", str(value or "")).strip()
+    if not text:
         return [""]
 
-    # Keep hyphens/slashes attached to the preceding segment, but allow a break after them.
-    tokens = [token for token in re.split(r"(?<=[-/])|\s+", value) if token]
+    raw_tokens = text.split(" ")
+    tokens: list[str] = []
+    for token in raw_tokens:
+        tokens.extend(_split_long_token(token, max_units))
+
     lines: list[str] = []
     current = ""
-
     for token in tokens:
-        joiner = "" if (not current or current.endswith(("-", "/"))) else " "
-        candidate = f"{current}{joiner}{token}" if current else token
-
-        if len(candidate) <= max_chars:
+        candidate = token if not current else f"{current} {token}"
+        if visual_width(candidate) <= max_units:
             current = candidate
             continue
-
         if current:
             lines.append(current)
-            current = ""
-
-        # Extremely long unbroken identifiers still need a safe fallback.
-        while len(token) > max_chars:
-            lines.append(token[:max_chars])
-            token = token[max_chars:]
         current = token
+    if current:
+        lines.append(current)
 
+    if max_lines is not None and len(lines) > max_lines:
+        kept = lines[:max_lines]
+        overflow = " ".join(lines[max_lines - 1 :])
+        kept[-1] = _truncate_to_units(overflow, max_units)
+        return kept
+    return lines or [""]
+
+
+def wrap_project_title(value: object, max_units: int) -> list[str]:
+    """Wrap repo-style names after spaces, slashes, and hyphens where possible."""
+    title = str(value or "").strip()
+    if not title:
+        return [""]
+
+    tokens = [token for token in re.split(r"(?<=[-/])|\s+", title) if token]
+    expanded: list[str] = []
+    for token in tokens:
+        expanded.extend(_split_long_token(token, max_units))
+
+    lines: list[str] = []
+    current = ""
+    for token in expanded:
+        joiner = "" if not current or current.endswith(("-", "/")) else " "
+        candidate = f"{current}{joiner}{token}" if current else token
+        if visual_width(candidate) <= max_units:
+            current = candidate
+            continue
+        if current:
+            lines.append(current)
+        current = token
     if current:
         lines.append(current)
     return lines or [""]
 
 
-def project_title_layout(text: object) -> tuple[list[str], int]:
-    # Wider titles get a slightly smaller size, but stay deliberately large/editorial.
-    for font_size, max_chars in ((42, 19), (39, 21), (36, 23), (33, 25), (30, 28)):
-        lines = wrap_project_title(text, max_chars)
+def project_title_layout(value: object) -> tuple[list[str], int]:
+    for font_size, max_units in ((42, 20), (39, 23), (36, 26), (33, 29), (30, 32)):
+        lines = wrap_project_title(value, max_units)
         if len(lines) <= 2:
             return lines, font_size
 
-    lines = wrap_project_title(text, 28)
+    lines = wrap_project_title(value, 32)
     if len(lines) > 2:
-        tail = " ".join(lines[1:])
-        tail = textwrap.shorten(tail, width=28, placeholder="…")
-        lines = [lines[0], tail]
+        lines = [lines[0], _truncate_to_units(" ".join(lines[1:]), 32)]
     return lines[:2], 30
 
 
 def asset_version(cfg: dict) -> str:
     raw = json.dumps(cfg, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
-    return hashlib.sha256(f"{RENDERER_VERSION}:{raw}".encode("utf-8")).hexdigest()[:10]
+    payload = f"{RENDERER_VERSION}:{raw}".encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()[:10]
 
 
 def palette(theme: str, accent: str) -> dict[str, str]:
@@ -134,7 +192,7 @@ def svg_document(
   <desc id="desc">{esc(description)}</desc>
   <defs>
     <style>
-      .sans {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }}
+      .sans {{ font-family: "Noto Sans CJK KR", "Noto Sans KR", "NanumGothic", "NanumBarunGothic", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }}
       .serif {{ font-family: Georgia, "Times New Roman", serif; }}
       .label {{ font-size: 13px; font-weight: 700; letter-spacing: 1.7px; }}
       .small {{ font-size: 14px; font-weight: 600; letter-spacing: .2px; }}
@@ -156,6 +214,7 @@ def split_name(value: str) -> list[str]:
         return [value]
     if len(words) == 2:
         return words
+
     best_index = 1
     best_delta = len(value)
     for index in range(1, len(words)):
@@ -188,7 +247,7 @@ def render_hero(cfg: dict) -> None:
         first_y = 198 if font_size >= 76 else 190
         name_y = [first_y, first_y + line_height]
 
-    tagline_lines = wrap(tagline, 22)[:3]
+    tagline_lines = visual_wrap(tagline, 27, max_lines=3)
 
     def build(theme: str) -> str:
         p = palette(theme, accent)
@@ -201,10 +260,9 @@ def render_hero(cfg: dict) -> None:
             for line, y in zip(name_lines, name_y)
         )
         tagline_markup = "".join(
-            f'<text x="982" y="{170 + i * 46}" class="serif" fill="{right_ink}" font-size="33" letter-spacing="-.6px">{esc(line)}</text>'
-            for i, line in enumerate(tagline_lines)
+            f'<text x="982" y="{170 + index * 46}" class="serif" fill="{right_ink}" font-size="33" letter-spacing="-.6px">{esc(line)}</text>'
+            for index, line in enumerate(tagline_lines)
         )
-
         body = f'''
   <rect width="936" height="440" fill="{left_bg}"/>
   <rect x="936" width="464" height="440" fill="{right_bg}"/>
@@ -215,7 +273,6 @@ def render_hero(cfg: dict) -> None:
   <line x1="64" y1="72" x2="872" y2="72" stroke="{left_rule}"/>
 
   {name_markup}
-
   <line x1="64" y1="366" x2="872" y2="366" stroke="{left_rule}"/>
   <text x="64" y="400" class="sans label" fill="{left_meta}">{esc(location)}</text>
   <text x="872" y="400" text-anchor="end" class="sans label" fill="{left_meta}">{esc(website_label)}</text>
@@ -226,7 +283,13 @@ def render_hero(cfg: dict) -> None:
   <text x="982" y="362" class="sans small" fill="{right_meta}">Selected work, open source, and notes below.</text>
   <path d="M982 390 H1030 M1022 382 L1030 390 L1022 398" fill="none" stroke="{right_ink}" stroke-width="1.5"/>
 '''
-        return svg_document(1400, 440, f"{name} - {role}", f"GitHub profile introduction for {name}.", body)
+        return svg_document(
+            1400,
+            440,
+            f"{name} - {role}",
+            f"GitHub profile introduction for {name}.",
+            body,
+        )
 
     write_themed_asset("hero", build("light"), build("dark"))
 
@@ -243,16 +306,18 @@ def render_focus(cfg: dict) -> None:
         starts = [64, 501, 938]
         for index, (item, x) in enumerate(zip(focus, starts), start=1):
             label = str(item.get("label", "Focus")).strip().upper()
-            value_lines = wrap(item.get("value", ""), 25)[:2]
+            value_lines = visual_wrap(item.get("value", ""), 27, max_lines=2)
             value_markup = "".join(
                 f'<text x="{x}" y="{156 + row * 34}" class="sans" fill="{p["ink"]}" font-size="25" font-weight="650" letter-spacing="-.5px">{esc(line)}</text>'
                 for row, line in enumerate(value_lines)
             )
-            columns.append(f'''
+            columns.append(
+                f'''
   <text x="{x}" y="116" class="serif" fill="{p['muted']}" font-size="21">0{index}</text>
   <text x="{x + 52}" y="115" class="sans label" fill="{p['muted']}">{esc(label)}</text>
   {value_markup}
-''')
+'''
+            )
 
         body = f'''
   <rect width="1400" height="250" fill="{p['bg']}"/>
@@ -287,12 +352,14 @@ def render_stack(cfg: dict) -> None:
                     f'<text x="{x}" y="{y}" class="sans" fill="{p["ink"]}" font-size="21" font-weight="600" letter-spacing="-.3px">{esc(item)}</text>'
                 )
                 y += 35
-            markup.append(f'''
+            markup.append(
+                f'''
   <text x="{x}" y="104" class="serif" fill="{p['muted']}" font-size="18">0{index}</text>
   <text x="{x + 42}" y="103" class="sans label" fill="{p['muted']}">{esc(str(group).upper())}</text>
   <line x1="{x}" y1="118" x2="{x + 256}" y2="118" stroke="{accent}" stroke-width="2"/>
   {''.join(item_lines)}
-''')
+'''
+            )
 
         body = f'''
   <rect width="1400" height="338" fill="{p['bg']}"/>
@@ -304,7 +371,13 @@ def render_stack(cfg: dict) -> None:
   <line x1="1007" y1="92" x2="1007" y2="304" stroke="{p['rule']}"/>
   {''.join(markup)}
 '''
-        return svg_document(1400, 338, "Selected technology stack", "A curated technology stack grouped by area.", body)
+        return svg_document(
+            1400,
+            338,
+            "Selected technology stack",
+            "A curated technology stack grouped by area.",
+            body,
+        )
 
     write_themed_asset("stack", build("light"), build("dark"))
 
@@ -317,7 +390,7 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
     tags = [str(value).strip() for value in project.get("tags", []) if str(value).strip()][:5]
 
     title_lines, title_font_size = project_title_layout(title)
-    desc_lines = wrap(description, 44)[:3]
+    desc_lines = visual_wrap(description, 50, max_lines=3)
     tags_line = "  /  ".join(tags[:4])
 
     def build(theme: str) -> str:
@@ -338,7 +411,6 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
             f'<text x="790" y="{116 + row * 27}" class="sans" fill="{ink}" font-size="17" font-weight="470" letter-spacing="-.1px">{esc(line)}</text>'
             for row, line in enumerate(desc_lines)
         )
-
         body = f'''
   <rect width="1400" height="270" fill="{bg}"/>
   <rect width="4" height="270" fill="{accent}"/>
@@ -347,7 +419,6 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
 
   <text x="64" y="183" class="serif" fill="{muted}" font-size="96" letter-spacing="-4px">{index:02d}</text>
   <line x1="270" y1="92" x2="270" y2="224" stroke="{rule}"/>
-
   {title_markup}
   <line x1="752" y1="92" x2="752" y2="224" stroke="{rule}"/>
 
@@ -356,7 +427,13 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
   <text x="1240" y="215" class="sans label" fill="{ink}">VIEW</text>
   <path d="M1292 210 H1334 M1326 202 L1334 210 L1326 218" fill="none" stroke="{ink}" stroke-width="1.5"/>
 '''
-        return svg_document(1400, 270, f"Project {index}: {title}", description or f"Selected project {title}.", body)
+        return svg_document(
+            1400,
+            270,
+            f"Project {index}: {title}",
+            description or f"Selected project {title}.",
+            body,
+        )
 
     write_themed_asset(f"project-{index:02d}", build("light"), build("dark"))
 
@@ -372,6 +449,7 @@ def markdown_links(cfg: dict) -> str:
         values.append(("Email", f"mailto:{cfg['email']}"))
     if cfg.get("website"):
         values.append(("Website", str(cfg["website"])))
+
     return " &nbsp;&nbsp;·&nbsp;&nbsp; ".join(
         f'<a href="{esc(safe_url(url))}"><strong>{esc(label)}</strong></a>'
         for label, url in values
@@ -379,24 +457,42 @@ def markdown_links(cfg: dict) -> str:
 
 
 def picture(asset: str, alt: str, version: str, width: str = "100%") -> str:
-    return f'''<picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/{asset}-dark.svg?v={version}" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/{asset}-light.svg?v={version}" />
-    <img src="./assets/{asset}.svg?v={version}" width="{width}" alt="{esc(alt)}" />
-  </picture>'''
+    """Compact HTML is intentional: adjacent block images must not gain text-node gaps."""
+    return (
+        f'<picture><source media="(prefers-color-scheme: dark)" '
+        f'srcset="./assets/{asset}-dark.svg?v={version}" />'
+        f'<source media="(prefers-color-scheme: light)" '
+        f'srcset="./assets/{asset}-light.svg?v={version}" />'
+        f'<img src="./assets/{asset}.svg?v={version}" width="{width}" align="top" '
+        f'alt="{esc(alt)}" /></picture>'
+    )
+
+
+def stacked_linked_pictures(cards: Iterable[tuple[str, str, str]], version: str) -> str:
+    """Keep cards in one raw HTML block so GitHub does not wrap each in a <p>."""
+    children = "".join(
+        f'<a href="{esc(safe_url(url))}" aria-label="{esc(alt)}">{picture(asset, alt, version)}</a>'
+        for asset, alt, url in cards
+    )
+    return f'<div align="center">{children}</div>'
 
 
 def project_markdown(cfg: dict, version: str) -> str:
-    blocks: list[str] = []
+    cards: list[tuple[str, str, str]] = []
     for index, project in enumerate(cfg.get("projects", [])[:3], start=1):
-        url = esc(safe_url(project.get("repo", "#")))
-        alt = esc(project.get("title", f"Project {index}"))
-        blocks.append(
-            f'''<a href="{url}">
-  {picture(f"project-{index:02d}", alt, version)}
-</a>'''
+        cards.append(
+            (
+                f"project-{index:02d}",
+                str(project.get("title", f"Project {index}")),
+                str(project.get("repo", "#")),
+            )
         )
-    return "\n\n".join(blocks)
+    return stacked_linked_pictures(cards, version)
+
+
+def _extract_marked_block(text: str, start: str, end: str) -> str:
+    match = re.search(re.escape(start) + r".*?" + re.escape(end), text, flags=re.DOTALL)
+    return match.group(0) if match else ""
 
 
 def render_readme(cfg: dict) -> None:
@@ -406,6 +502,7 @@ def render_readme(cfg: dict) -> None:
         raise SystemExit(
             f"Missing {template_path.name}. Keep it in the repository root next to profile.json."
         )
+
     template = template_path.read_text(encoding="utf-8")
     rendered = (
         template.replace("{{VERSION}}", version)
@@ -413,7 +510,22 @@ def render_readme(cfg: dict) -> None:
         .replace("{{PROJECTS}}", project_markdown(cfg, version))
         .replace("{{CTA}}", esc(cfg.get("cta", "Build something worth opening.")))
     )
-    (ROOT / "README.md").write_text(rendered, encoding="utf-8")
+
+    # A profile re-render should not temporarily erase the last successful blog update.
+    readme_path = ROOT / "README.md"
+    if readme_path.exists():
+        previous = readme_path.read_text(encoding="utf-8")
+        previous_blog = _extract_marked_block(previous, BLOG_START_MARKER, BLOG_END_MARKER)
+        if previous_blog:
+            rendered = re.sub(
+                re.escape(BLOG_START_MARKER) + r".*?" + re.escape(BLOG_END_MARKER),
+                lambda _: previous_blog,
+                rendered,
+                count=1,
+                flags=re.DOTALL,
+            )
+
+    readme_path.write_text(rendered, encoding="utf-8")
 
 
 def main() -> None:
@@ -433,7 +545,7 @@ def main() -> None:
     for index, project in enumerate(cfg.get("projects", [])[:3], start=1):
         render_project(cfg, project, index)
     render_readme(cfg)
-    print("Rendered README.md and the complete editorial SVG system.")
+    print("Rendered README.md and the gapless editorial SVG system.")
 
 
 if __name__ == "__main__":

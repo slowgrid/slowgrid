@@ -1,42 +1,20 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/hero-dark.svg?v={{VERSION}}" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/hero-light.svg?v={{VERSION}}" />
-    <img src="./assets/hero.svg?v={{VERSION}}" width="100%" alt="Developer profile introduction" />
-  </picture>
-</p>
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/hero-dark.svg?v={{VERSION}}" /><source media="(prefers-color-scheme: light)" srcset="./assets/hero-light.svg?v={{VERSION}}" /><img src="./assets/hero.svg?v={{VERSION}}" width="100%" align="top" alt="Developer profile introduction" /></picture></div>
 
-<p align="center">
+<div align="center">
   {{LINKS}}
-</p>
-
-<br />
+</div>
 
 ## Current focus
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/focus-dark.svg?v={{VERSION}}" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/focus-light.svg?v={{VERSION}}" />
-    <img src="./assets/focus.svg?v={{VERSION}}" width="100%" alt="Current focus" />
-  </picture>
-</p>
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/focus-dark.svg?v={{VERSION}}" /><source media="(prefers-color-scheme: light)" srcset="./assets/focus-light.svg?v={{VERSION}}" /><img src="./assets/focus.svg?v={{VERSION}}" width="100%" align="top" alt="Current focus" /></picture></div>
 
 ## Selected stack
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/stack-dark.svg?v={{VERSION}}" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/stack-light.svg?v={{VERSION}}" />
-    <img src="./assets/stack.svg?v={{VERSION}}" width="100%" alt="Selected technology stack" />
-  </picture>
-</p>
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/stack-dark.svg?v={{VERSION}}" /><source media="(prefers-color-scheme: light)" srcset="./assets/stack-light.svg?v={{VERSION}}" /><img src="./assets/stack.svg?v={{VERSION}}" width="100%" align="top" alt="Selected technology stack" /></picture></div>
 
 ## Selected work
 
 {{PROJECTS}}
-
-<br />
 
 ## Writing
 
@@ -45,10 +23,10 @@
 
 ---
 
-<p align="center">
+<div align="center">
   <strong>{{CTA}}</strong>
-</p>
+</div>
 
-<p align="center">
+<div align="center">
   <sub>Content is generated from <code>profile.json</code>. The SVG URLs are versioned automatically so GitHub does not keep showing stale images.</sub>
-</p>
+</div>
