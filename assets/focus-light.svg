@@ -20,11 +20,11 @@
   
   <text x="64" y="116" class="serif" fill="#6f6c66" font-size="21">01</text>
   <text x="116" y="115" class="sans label" fill="#6f6c66">BUILDING</text>
-  <text x="64" y="156" class="sans" fill="#171717" font-size="25" font-weight="650" letter-spacing="-.5px">YOUR CURRENT PRODUCT</text>
+  <text x="64" y="156" class="sans" fill="#171717" font-size="25" font-weight="650" letter-spacing="-.5px">LocalQA</text>
 
   <text x="501" y="116" class="serif" fill="#6f6c66" font-size="21">02</text>
   <text x="553" y="115" class="sans label" fill="#6f6c66">LEARNING</text>
-  <text x="501" y="156" class="sans" fill="#171717" font-size="25" font-weight="650" letter-spacing="-.5px">DISTRIBUTED SYSTEMS</text>
+  <text x="501" y="156" class="sans" fill="#171717" font-size="25" font-weight="650" letter-spacing="-.5px">Algorithm</text>
 
   <text x="938" y="116" class="serif" fill="#6f6c66" font-size="21">03</text>
   <text x="990" y="115" class="sans label" fill="#6f6c66">EXPLORING</text>
