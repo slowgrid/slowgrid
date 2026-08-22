@@ -12,7 +12,7 @@
   
   <rect width="1400" height="270" fill="#171717"/>
   <rect width="4" height="270" fill="#7c3aed"/>
-  <text x="64" y="48" class="sans label" fill="#a6a299">PROJECT 02  /  OPEN SOURCE</text>
+  <text x="64" y="48" class="sans label" fill="#a6a299">PROJECT 02  /  AI ROUTING DEMO</text>
   <line x1="64" y1="68" x2="1336" y2="68" stroke="#403f3c"/>
 
   <text x="64" y="183" class="serif" fill="#a6a299" font-size="96" letter-spacing="-4px">02</text>
