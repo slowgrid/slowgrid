@@ -1,8 +1,4 @@
-<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/hero-dark.svg?v={{VERSION}}" /><source media="(prefers-color-scheme: light)" srcset="./assets/hero-light.svg?v={{VERSION}}" /><img src="./assets/hero.svg?v={{VERSION}}" width="100%" align="top" alt="Developer profile introduction" /></picture></div>
-
-<div align="center">
-  {{LINKS}}
-</div>
+<div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/hero-dark.svg?v={{VERSION}}" /><source media="(prefers-color-scheme: light)" srcset="./assets/hero-light.svg?v={{VERSION}}" /><img src="./assets/hero.svg?v={{VERSION}}" width="100%" align="top" alt="Developer profile introduction" /></picture></div><div align="center">{{SOCIALS}}</div>
 
 ## Current focus
 

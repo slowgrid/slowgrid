@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 ASSETS.mkdir(parents=True, exist_ok=True)
 
-RENDERER_VERSION = "editorial-complete-3"
+RENDERER_VERSION = "editorial-complete-4"
 BLOG_START_MARKER = "<!-- BLOG-POSTS:START -->"
 BLOG_END_MARKER = "<!-- BLOG-POSTS:END -->"
 
@@ -438,22 +438,174 @@ def render_project(cfg: dict, project: dict, index: int) -> None:
     write_themed_asset(f"project-{index:02d}", build("light"), build("dark"))
 
 
-def markdown_links(cfg: dict) -> str:
-    values: list[tuple[str, str]] = []
+def social_entries(cfg: dict) -> list[dict[str, str]]:
+    # Keep link order aligned with the editorial navigation strip.
+    entries: list[dict[str, str]] = []
     username = str(cfg.get("username", "")).strip().lstrip("@")
     if username:
-        values.append(("GitHub", f"https://github.com/{username}"))
+        entries.append(
+            {
+                "key": "github",
+                "label": "GitHub",
+                "meta": f"@{username}",
+                "url": f"https://github.com/{username}",
+            }
+        )
     if cfg.get("linkedin"):
-        values.append(("LinkedIn", str(cfg["linkedin"])))
+        entries.append(
+            {
+                "key": "linkedin",
+                "label": "LinkedIn",
+                "meta": "CONNECT",
+                "url": str(cfg["linkedin"]),
+            }
+        )
     if cfg.get("email"):
-        values.append(("Email", f"mailto:{cfg['email']}"))
+        email = str(cfg["email"]).strip()
+        domain = email.rsplit("@", 1)[-1] if "@" in email else "SEND A NOTE"
+        entries.append(
+            {
+                "key": "email",
+                "label": "Email",
+                "meta": domain.upper(),
+                "url": f"mailto:{email}",
+            }
+        )
     if cfg.get("website"):
-        values.append(("Website", str(cfg["website"])))
+        entries.append(
+            {
+                "key": "website",
+                "label": "Website",
+                "meta": display_url(str(cfg["website"]), username).upper(),
+                "url": str(cfg["website"]),
+            }
+        )
+    return entries
 
-    return " &nbsp;&nbsp;·&nbsp;&nbsp; ".join(
-        f'<a href="{esc(safe_url(url))}"><strong>{esc(label)}</strong></a>'
-        for label, url in values
+
+def social_widths(entries: list[dict[str, str]]) -> list[int]:
+    # Continue the hero split at x=932, including its 4 px accent rule.
+    keys = [entry["key"] for entry in entries]
+    if keys == ["github", "linkedin", "email", "website"]:
+        return [311, 311, 310, 468]
+    if not entries:
+        return []
+
+    base = 1400 // len(entries)
+    widths = [base] * len(entries)
+    widths[-1] += 1400 - sum(widths)
+    return widths
+
+
+def social_icon(kind: str, ink: str) -> str:
+    common = (
+        f'fill="none" stroke="{ink}" stroke-width="1.75" '
+        'stroke-linecap="round" stroke-linejoin="round"'
     )
+    if kind == "github":
+        return f'''<g {common}>
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.28-.36 6.72-1.61 6.72-7.25A5.65 5.65 0 0 0 19.22 3.3 5.26 5.26 0 0 0 19.13 0S17.95-.36 15 1.5a13.38 13.38 0 0 0-7 0C5.05-.36 3.87 0 3.87 0a5.26 5.26 0 0 0-.09 3.3 5.65 5.65 0 0 0-1.5 3.95c0 5.63 3.44 6.89 6.72 7.25A4.8 4.8 0 0 0 8 18v4"/>
+    <path d="M9 18c-4.51 2-5-2-7-2"/>
+  </g>'''
+    if kind == "linkedin":
+        return f'''<g {common}>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect x="2" y="9" width="4" height="12"/>
+    <circle cx="4" cy="4" r="2"/>
+  </g>'''
+    if kind == "email":
+        return f'''<g {common}>
+    <rect x="2" y="4" width="20" height="16" rx="2"/>
+    <path d="M22 6 12 13 2 6"/>
+  </g>'''
+    return f'''<g {common}>
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </g>'''
+
+
+def render_social_asset(
+    cfg: dict,
+    entry: dict[str, str],
+    width: int,
+    index: int,
+    inverse: bool,
+    accent_edge: bool,
+) -> None:
+    accent = str(cfg.get("accent", "#b54a36"))
+    label = entry["label"].upper()
+    meta = _truncate_to_units(entry["meta"], 31 if width >= 400 else 13)
+
+    def build(theme: str) -> str:
+        p = palette(theme, accent)
+        bg = p["inverse_bg"] if inverse else p["bg"]
+        ink = p["inverse_ink"] if inverse else p["ink"]
+        muted = p["inverse_muted"] if inverse else p["muted"]
+        rule = p["inverse_rule"] if inverse else p["rule"]
+        edge = f'<rect width="4" height="112" fill="{accent}"/>' if accent_edge else ""
+        separator = (
+            f'<line x1="{width - 0.5}" y1="18" x2="{width - 0.5}" y2="94" stroke="{rule}"/>'
+            if not inverse
+            else ""
+        )
+        body = f'''
+  <rect width="{width}" height="112" fill="{bg}"/>
+  {edge}
+  <line x1="0" y1="0.5" x2="{width}" y2="0.5" stroke="{rule}"/>
+  {separator}
+  <rect x="28" y="28" width="56" height="56" fill="none" stroke="{rule}"/>
+  <g transform="translate(44 44) scale(1.05)">
+    {social_icon(entry['key'], ink)}
+  </g>
+  <text x="104" y="49" class="sans" fill="{ink}" font-size="19" font-weight="720" letter-spacing="-.25px">{esc(label)}</text>
+  <text x="104" y="75" class="sans label" fill="{muted}">{esc(meta)}</text>
+  <text x="{width - 62}" y="40" class="serif" fill="{muted}" font-size="15">0{index}</text>
+  <path d="M{width - 62} 68 H{width - 28} M{width - 36} 60 L{width - 28} 68 L{width - 36} 76" fill="none" stroke="{ink}" stroke-width="1.5"/>
+'''
+        return svg_document(
+            width,
+            112,
+            f"{entry['label']} link",
+            f"Open {entry['label']} for this profile.",
+            body,
+        )
+
+    write_themed_asset(f"social-{entry['key']}", build("light"), build("dark"))
+
+
+def render_socials(cfg: dict) -> None:
+    entries = social_entries(cfg)
+    widths = social_widths(entries)
+    expected: set[str] = set()
+    hero_continuation = [entry["key"] for entry in entries] == [
+        "github",
+        "linkedin",
+        "email",
+        "website",
+    ]
+
+    for index, (entry, width) in enumerate(zip(entries, widths), start=1):
+        inverse = hero_continuation and entry["key"] == "website"
+        accent_edge = inverse
+        render_social_asset(cfg, entry, width, index, inverse, accent_edge)
+        stem = f"social-{entry['key']}"
+        expected.update({f"{stem}.svg", f"{stem}-light.svg", f"{stem}-dark.svg"})
+
+    for path in ASSETS.glob("social-*.svg"):
+        if path.name not in expected:
+            path.unlink()
+
+
+def social_markdown(cfg: dict, version: str) -> str:
+    entries = social_entries(cfg)
+    widths = social_widths(entries)
+    children = "".join(
+        f'<a href="{esc(safe_url(entry["url"]))}" aria-label="Open {esc(entry["label"])}">'
+        f'{picture(f"social-{entry["key"]}", entry["label"], version, f"{width / 14:.6f}%")}'
+        f'</a>'
+        for entry, width in zip(entries, widths)
+    )
+    return children
 
 
 def picture(asset: str, alt: str, version: str, width: str = "100%") -> str:
@@ -506,7 +658,7 @@ def render_readme(cfg: dict) -> None:
     template = template_path.read_text(encoding="utf-8")
     rendered = (
         template.replace("{{VERSION}}", version)
-        .replace("{{LINKS}}", markdown_links(cfg))
+        .replace("{{SOCIALS}}", social_markdown(cfg, version))
         .replace("{{PROJECTS}}", project_markdown(cfg, version))
         .replace("{{CTA}}", esc(cfg.get("cta", "Build something worth opening.")))
     )
@@ -540,12 +692,13 @@ def main() -> None:
         raise SystemExit("Missing or empty keys in profile.json: " + ", ".join(missing))
 
     render_hero(cfg)
+    render_socials(cfg)
     render_focus(cfg)
     render_stack(cfg)
     for index, project in enumerate(cfg.get("projects", [])[:3], start=1):
         render_project(cfg, project, index)
     render_readme(cfg)
-    print("Rendered README.md and the gapless editorial SVG system.")
+    print("Rendered README.md and the gapless editorial SVG system, including social navigation.")
 
 
 if __name__ == "__main__":
