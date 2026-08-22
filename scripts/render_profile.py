@@ -6,6 +6,7 @@ import html
 import json
 import re
 import unicodedata
+import urllib.request
 from pathlib import Path
 from typing import Iterable
 
@@ -13,9 +14,24 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 ASSETS.mkdir(parents=True, exist_ok=True)
 
-RENDERER_VERSION = "editorial-complete-4"
+RENDERER_VERSION = "editorial-complete-5"
 BLOG_START_MARKER = "<!-- BLOG-POSTS:START -->"
 BLOG_END_MARKER = "<!-- BLOG-POSTS:END -->"
+
+STACK_ICON_SOURCES = {
+    "python": "simple-icons/python",
+    "java": "devicon/java",
+    "springboot": "simple-icons/springboot",
+    "nodejs": "simple-icons/nodedotjs",
+    "postgresql": "simple-icons/postgresql",
+    "docker": "simple-icons/docker",
+    "aws": "simple-icons/amazonwebservices",
+    "amazonwebservices": "simple-icons/amazonwebservices",
+    "githubactions": "simple-icons/githubactions",
+    "pytorch": "simple-icons/pytorch",
+    "openai": "simple-icons/openai",
+}
+_STACK_ICON_CACHE: dict[str, tuple[str, tuple[float, float, float, float]] | None] = {}
 
 
 def esc(value: object) -> str:
@@ -334,6 +350,73 @@ def render_focus(cfg: dict) -> None:
     write_themed_asset("focus", build("light"), build("dark"))
 
 
+def stack_icon_key(value: object) -> str:
+    return re.sub(r"[^a-z0-9]+", "", str(value or "").lower())
+
+
+def load_stack_icon(value: object) -> tuple[str, tuple[float, float, float, float]] | None:
+    """Load a trusted Iconify SVG once, then reuse it for light/dark rendering."""
+    source = STACK_ICON_SOURCES.get(stack_icon_key(value))
+    if not source:
+        return None
+    if source in _STACK_ICON_CACHE:
+        return _STACK_ICON_CACHE[source]
+
+    url = f"https://api.iconify.design/{source}.svg"
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "slowgrid-profile-renderer/1.0"},
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=6) as response:
+            svg = response.read().decode("utf-8")
+
+        view_box_match = re.search(r'viewBox="([^\"]+)"', svg)
+        body_match = re.search(r"<svg[^>]*>(.*)</svg>", svg, flags=re.DOTALL)
+        if not view_box_match or not body_match:
+            raise ValueError("Icon SVG is missing a viewBox or body")
+
+        view_box = tuple(float(part) for part in view_box_match.group(1).split())
+        if len(view_box) != 4 or view_box[2] <= 0 or view_box[3] <= 0:
+            raise ValueError("Icon SVG has an invalid viewBox")
+
+        result = (body_match.group(1).strip(), view_box)
+    except (OSError, UnicodeDecodeError, ValueError):
+        result = None
+
+    _STACK_ICON_CACHE[source] = result
+    return result
+
+
+def stack_icon_markup(value: object, x: float, y: float, size: float, ink: str) -> str:
+    """Inline a stack logo so GitHub does not need nested external SVG resources."""
+    loaded = load_stack_icon(value)
+
+    if loaded is None:
+        fallback = "".join(char for char in str(value) if char.isalnum())[:2].upper() or "?"
+        return (
+            f'<rect x="{x}" y="{y}" width="{size}" height="{size}" rx="4" '
+            f'fill="none" stroke="{ink}" stroke-width="1.3"/>'
+            f'<text x="{x + size / 2}" y="{y + size * 0.69}" text-anchor="middle" '
+            f'class="sans" fill="{ink}" font-size="{size * 0.42:.1f}" font-weight="750">'
+            f'{esc(fallback)}</text>'
+        )
+
+    body, (min_x, min_y, width, height) = loaded
+    scale = min(size / width, size / height)
+    draw_width = width * scale
+    draw_height = height * scale
+    tx = x + (size - draw_width) / 2 - min_x * scale
+    ty = y + (size - draw_height) / 2 - min_y * scale
+
+    body = body.replace("currentColor", ink)
+    return (
+        f'<g transform="translate({tx:.3f} {ty:.3f}) scale({scale:.6f})" '
+        f'fill="{ink}" color="{ink}" aria-hidden="true">{body}</g>'
+    )
+
+
 def render_stack(cfg: dict) -> None:
     accent = str(cfg.get("accent", "#b54a36"))
     groups = list(cfg.get("stack", {}).items())[:4]
@@ -348,8 +431,11 @@ def render_stack(cfg: dict) -> None:
             item_lines: list[str] = []
             y = 146
             for item in list(items)[:5]:
+                icon_size = 22
+                icon_y = y - 18
                 item_lines.append(
-                    f'<text x="{x}" y="{y}" class="sans" fill="{p["ink"]}" font-size="21" font-weight="600" letter-spacing="-.3px">{esc(item)}</text>'
+                    f'{stack_icon_markup(item, x, icon_y, icon_size, p["ink"])}'
+                    f'<text x="{x + 34}" y="{y}" class="sans" fill="{p["ink"]}" font-size="21" font-weight="600" letter-spacing="-.3px">{esc(item)}</text>'
                 )
                 y += 35
             markup.append(

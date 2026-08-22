@@ -25,21 +25,21 @@
   "projects": [
     {
       "title": "Algorithm-Trace-Visualizer-Desktop",
-      "subtitle": "PRODUCTION SYSTEM",
+      "subtitle": "MULTI-LANGUAGE DEBUGGER",
       "description": "Desktop debugger that runs multiple languages locally and visualizes execution flow, variables, call stacks, and test results.",
       "repo": "https://github.com/slowgrid/Algorithm-Trace-Visualizer-Desktop",
       "tags": ["TypeScript", "Electron", "React"]
     },
     {
       "title": "EcoRoute",
-      "subtitle": "OPEN SOURCE",
+      "subtitle": "AI ROUTING DEMO",
       "description": "Eco-friendly route system that uses a DNN to estimate energy consumption and CO₂ across candidate routes.",
       "repo": "https://github.com/EST-AI-Challengers-BestDriver/EcoRoute",
       "tags": ["Python", "PyTorch", "NetworkX"]
     },
     {
       "title": "LocalQA",
-      "subtitle": "EXPERIMENTAL BUILD",
+      "subtitle": "LOCAL-FIRST QA AUTOMATION",
       "description": "Local-first QA tool that crawls websites, detects common issues, and exports reproducible reports.",
       "repo": "https://github.com/slowgrid/LocalQA",
       "tags": ["TypeScript", "Electron", "Playwright"]
