@@ -1,0 +1,53 @@
+name: Update blog posts
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - 'Render profile'
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  update-blog-posts:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Update blog cards
+        env:
+          FEATURED_POST_URL: ${{ vars.FEATURED_POST_URL }}
+        run: |
+          python scripts/update_blog_posts.py \
+            --readme README.md \
+            --rss-url 'https://slowgrid.tistory.com/rss' \
+            --limit 3 \
+            --featured-url "$FEATURED_POST_URL"
+
+      - name: Commit README if changed
+        run: |
+          if git diff --quiet -- README.md; then
+            echo 'README is already up to date.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git commit -m 'chore(profile): update blog posts [skip ci]'
+          git push

@@ -38,6 +38,11 @@
 
 <br />
 
+## Writing
+
+<!-- BLOG-POSTS:START -->
+<!-- BLOG-POSTS:END -->
+
 ---
 
 <p align="center">
