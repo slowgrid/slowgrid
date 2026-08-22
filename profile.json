@@ -12,8 +12,8 @@
   "accent": "#7c3aed",
   "accent2": "#22d3ee",
   "focus": [
-    {"label": "Building", "value": "YOUR CURRENT PRODUCT", "progress": 60},
-    {"label": "Learning", "value": "DISTRIBUTED SYSTEMS", "progress": 71},
+    {"label": "Building", "value": "LocalQA", "progress": 60},
+    {"label": "Learning", "value": "Algorithm", "progress": 37},
     {"label": "Exploring", "value": "AGENTIC AI", "progress": 49}
   ],
   "stack": {
