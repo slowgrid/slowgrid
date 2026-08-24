@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="238" viewBox="0 0 1400 238" role="img" aria-labelledby="title desc">
-  <title id="title">LATEST POST: [TIL] - 2026.08.20 | 투 포인터 (Two Pointers)</title>
-  <desc id="desc">[TIL] - 2026.08.20 | 투 포인터 (Two Pointers), published 2026.08.20 on slowgrid.tistory.com.</desc>
+  <title id="title">LATEST POST: [TIL] - 2026.08.21 | 누적합 (Prefix Sum)</title>
+  <desc id="desc">[TIL] - 2026.08.21 | 누적합 (Prefix Sum), published 2026.08.21 on slowgrid.tistory.com.</desc>
   <defs>
     <style>
       .sans { font-family: "Noto Sans CJK KR", "Noto Sans KR", "NanumGothic", "NanumBarunGothic", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
@@ -18,8 +18,8 @@
 
   <text x="64" y="174" class="serif" fill="#a6a299" font-size="90" letter-spacing="-4px">04</text>
   <line x1="270" y1="88" x2="270" y2="198" stroke="#403f3c"/>
-  <text x="306" y="108" class="sans" fill="#f4f1e9" font-size="37" font-weight="720" letter-spacing="-1.05px">[TIL] - 2026.08.20 | 투 포인터 (Two</text><text x="306" y="153" class="sans" fill="#f4f1e9" font-size="37" font-weight="720" letter-spacing="-1.05px">Pointers)</text>
-  <text x="306" y="205" class="sans label" fill="#a6a299">2026.08.20  /  SLOWGRID.TISTORY.COM</text>
+  <text x="306" y="108" class="sans" fill="#f4f1e9" font-size="37" font-weight="720" letter-spacing="-1.05px">[TIL] - 2026.08.21 | 누적합 (Prefix</text><text x="306" y="153" class="sans" fill="#f4f1e9" font-size="37" font-weight="720" letter-spacing="-1.05px">Sum)</text>
+  <text x="306" y="205" class="sans label" fill="#a6a299">2026.08.21  /  SLOWGRID.TISTORY.COM</text>
 
   <line x1="1080" y1="88" x2="1080" y2="198" stroke="#403f3c"/>
   <text x="1120" y="118" class="sans label" fill="#a6a299">LATEST POST</text>
