@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="238" viewBox="0 0 1400 238" role="img" aria-labelledby="title desc">
-  <title id="title">LATEST POST: OpenCV 영상처리 응용 - CLAHE와 Bilateral Filter, 그리고 전처리 성능 비교</title>
-  <desc id="desc">OpenCV 영상처리 응용 - CLAHE와 Bilateral Filter, 그리고 전처리 성능 비교, published 2026.08.28 on slowgrid.tistory.com.</desc>
+  <title id="title">LATEST POST: 객체탐지(Object Detection) 기초 (1) — Bounding Box와 Confidence Score 이해하기</title>
+  <desc id="desc">객체탐지(Object Detection) 기초 (1) — Bounding Box와 Confidence Score 이해하기, published 2026.08.29 on slowgrid.tistory.com.</desc>
   <defs>
     <style>
       .sans { font-family: "Noto Sans CJK KR", "Noto Sans KR", "NanumGothic", "NanumBarunGothic", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
@@ -18,8 +18,8 @@
 
   <text x="64" y="174" class="serif" fill="#a6a299" font-size="90" letter-spacing="-4px">04</text>
   <line x1="270" y1="88" x2="270" y2="198" stroke="#403f3c"/>
-  <text x="306" y="108" class="sans" fill="#f4f1e9" font-size="34" font-weight="720" letter-spacing="-1.05px">OpenCV 영상처리 응용 - CLAHE와 Bilateral</text><text x="306" y="149" class="sans" fill="#f4f1e9" font-size="34" font-weight="720" letter-spacing="-1.05px">Filter, 그리고 전처리 성능 비교</text>
-  <text x="306" y="205" class="sans label" fill="#a6a299">2026.08.28  /  SLOWGRID.TISTORY.COM</text>
+  <text x="306" y="108" class="sans" fill="#f4f1e9" font-size="34" font-weight="720" letter-spacing="-1.05px">객체탐지(Object Detection) 기초 (1) —</text><text x="306" y="149" class="sans" fill="#f4f1e9" font-size="34" font-weight="720" letter-spacing="-1.05px">Bounding Box와 Confidence Score 이해하기</text>
+  <text x="306" y="205" class="sans label" fill="#a6a299">2026.08.29  /  SLOWGRID.TISTORY.COM</text>
 
   <line x1="1080" y1="88" x2="1080" y2="198" stroke="#403f3c"/>
   <text x="1120" y="118" class="sans label" fill="#a6a299">LATEST POST</text>
