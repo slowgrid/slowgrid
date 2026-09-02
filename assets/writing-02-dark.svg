@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="238" viewBox="0 0 1400 238" role="img" aria-labelledby="title desc">
-  <title id="title">LATEST POST: 객체탐지(Object Detection) 기초 (3) — Precision-Recall Curve부터 AP, mAP50-95까지</title>
-  <desc id="desc">객체탐지(Object Detection) 기초 (3) — Precision-Recall Curve부터 AP, mAP50-95까지, published 2026.08.31 on slowgrid.tistory.com.</desc>
+  <title id="title">LATEST POST: 최대 유량(4) Push-Relabel은 어떻게 동작하는가</title>
+  <desc id="desc">최대 유량(4) Push-Relabel은 어떻게 동작하는가, published 2026.09.01 on slowgrid.tistory.com.</desc>
   <defs>
     <style>
       .sans { font-family: "Noto Sans CJK KR", "Noto Sans KR", "NanumGothic", "NanumBarunGothic", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
@@ -18,8 +18,8 @@
 
   <text x="64" y="174" class="serif" fill="#716e67" font-size="90" letter-spacing="-4px">02</text>
   <line x1="270" y1="88" x2="270" y2="198" stroke="#c8c4ba"/>
-  <text x="306" y="108" class="sans" fill="#171717" font-size="34" font-weight="720" letter-spacing="-1.05px">객체탐지(Object Detection) 기초 (3) —</text><text x="306" y="149" class="sans" fill="#171717" font-size="34" font-weight="720" letter-spacing="-1.05px">Precision-Recall Curve부터 AP, mAP50-95까지</text>
-  <text x="306" y="205" class="sans label" fill="#716e67">2026.08.31  /  SLOWGRID.TISTORY.COM</text>
+  <text x="306" y="108" class="sans" fill="#171717" font-size="37" font-weight="720" letter-spacing="-1.05px">최대 유량(4) Push-Relabel은 어떻게</text><text x="306" y="153" class="sans" fill="#171717" font-size="37" font-weight="720" letter-spacing="-1.05px">동작하는가</text>
+  <text x="306" y="205" class="sans label" fill="#716e67">2026.09.01  /  SLOWGRID.TISTORY.COM</text>
 
   <line x1="1080" y1="88" x2="1080" y2="198" stroke="#c8c4ba"/>
   <text x="1120" y="118" class="sans label" fill="#716e67">LATEST POST</text>
